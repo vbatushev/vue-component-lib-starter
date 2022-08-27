@@ -1,11 +1,11 @@
 node_modules
 .DS_Store
-dist
+# dist
 dist-ssr
 *.local
 docs/.vuepress/.cache
 docs/.vuepress/.temp
-types
+# types
 
 .yarn
 yarn.lock
