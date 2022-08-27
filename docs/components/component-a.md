@@ -22,18 +22,21 @@ You may show props, slots, events, methods, etc. using Markdown.
 
 ### Properties
 
-| Name | Type   | Default | Description    |
-| ---- | ------ | ------- | -------------- |
-| msg  | string | null    | Messge to show |
+
+| Name | Type | Default | Description |
+| - | - | - | - |
+| message | string | null | Messge to show |
 
 ### Events
 
+
 | Name | Parameters | Description |
-| ---- | ---------- | ----------- |
-|      |            |             |
+| - | - | - |
+|   |   |   |
 
 ### Slots
 
+
 | Name | Parameters | Description |
-| ---- | ---------- | ----------- |
-|      |            |             |
+| - | - | - |
+|   |   |   |

@@ -2,60 +2,63 @@
 
 # Vue Component Library Starter
 
-> Create your own [Vue 3](https://v3.vuejs.org/) component library with TypeScript, [Vite](https://vitejs.dev) and [VitePress](https://vitepress.vuejs.org/).
+> Создание собственной библиотеки компонентов [Vue 3](https://v3.vuejs.org/) с использованиеим TypeScript, [Vite](https://vitejs.dev) и [VitePress](https://vitepress.vuejs.org/).
 
-Sooner or later, you will find that creating a component library is much better than having all components inside your app project. A component library force to you remove app specific logic from your components, making it easier to test and reuse them in other apps.
+Рано или поздно, вы поймете, что создание библиотеки компонентов лучше, чем иметь сразу все компоненты в вашем проекте. Библиотека компонентов позволит вам убрать логику приложения из ваших компонентов, упростить тестирование, а также позволит переиспользовать ваши компоненты в других приложениях.
 
-Once the components are in a library, documentation becomes critical. This starter project includes a documentation app powered by VitePress. It not only documents the usage of the component, but also provides a testing bed during the development of components. See the generated documentation app [here](https://sharp-babbage-154f0a.netlify.com/).
+Когда компоненты собраны в библиотеку, документирование их становится критически важным. Поэтому данный стартовый проект включает в себя приложение для документирования на базе VitePress. Оно не только документирует использование компонентов, но позволяет создавать испытательный стенд на время разработки компонетов. Пример сгенерированной документации можно увидеть [здесь](https://sharp-babbage-154f0a.netlify.app/).
 
-## Setup
+## Установка
 
-> When running `docs:dev` for the first time, you may encounter error like `vitepress data not properly injected in app` in your browser. Restart the server and reload the browser. Please refer to [issue #30](https://github.com/wuruoyun/vue-component-lib-starter/issues/30) for more details.
+При первом запуске `docs:dev` вы можете получить ошибку в браузере вроде `vitepress data not properly injected in app`. Просто перезапустите сервис и перезагрузите страницу в браузере.
 
-```bash
-# install dependencies
+````
+# установка зависимостей
+
 npm install
 
-# start the doc app with hot reload, great for testing components
+# запуск документирования с горячей перезагрузкой, хорошо для тестирования компонентов
+
 npm run docs:dev
 
-# build the library, available under dist
+# сборка библиотеки, собирается в папку ./dist
+
 npm run build
 
-# build the doc app, available under docs/.vitepress/dist
+# сборка документации, собирается в папку docs/.vitepress/dist
+
 npm run docs:build
 
 # preview the doc app locally from docs/.vitepress/dist
+
 npm run docs:serve
-```
+````
 
-You may use [Netlify](https://www.netlify.com/) to auto build and deloy the doc app like this project does.
+## Разработка и локальное тестирование
 
-## Develop and test locally
+Лучший способ для разработки и тестирования ваших компонентов — это создать демо в папке `docs/components/demo`, как это показано в примерах компонентов.
 
-The best way to develop and test your component is by creating demos in `docs/components/demo` folder, as shown by the example components.
+Если вы хотите тестировать вашу библиотеку непосредственно в вашем приложении, то:
 
-If you want to test the library in your Vue3 app locally:
+* В корневой папке библиотеки выполните команду `npm link`. Это создат символическую ссылку на библиотеку.
+* В корневой папке вашего приложения выполните команду `npm link my-lib`. Это создаст символическую ссылку в папке `node_modules` вашего приложения.
+* Теперь вы можете импортировать вашу `my-lib` внутри своего приложения.
 
-- In the root folder of this library, run `npm link`. This will create a symbolic link to the library.
-- In the root folder of your client app, run `npm link my-lib`. This will add the symbolic link to the `node_modules` folder in your client app.
-- You can now import `my-lib` in your client app.
+В данном случае вам нет необходимости устанавливать зависимость в package.json.
 
-There is no need to add `my-lib` to your client app's dependency in this case.
+После внесения изменений в библиотеке вам будет необходимо ее пересобрать. А ваше приложение на Vue автоматически перезагрузится, когда библиотека будет пересобрана.
 
-If you made changes to the library, you will need to rebuild the library. Your Vue3 app shall hot reload when the building of library is completed.
+## Как это работает
 
-## How it works
+### Компоненты
 
-### Components
+Библитека компонентов  —это [плагин Vue](https://v3.vuejs.org/guide/plugins.html). Функция `install` в [index.ts](src/index.ts) **глобально** регистрирует все компоненты из папки [components](src/components) в приложении Vue.
 
-The library is a [Vue plugin](https://v3.vuejs.org/guide/plugins.html). The `install` function in [index.ts](src/index.ts) registers all components under [components](src/components) to Vue globably.
+Компоненты также экспортируются с помощью [index.ts](src/index.ts) так, чтобы вы могли импортировать их в свое приложение по отдельности, вместо использования библиотеки в качестве подключаемого модуля. Это может уменьшить размер бандла, если ваше приложение использует лишь отдельные компоненты из библиотеки.
 
-The components are also exported by [index.ts](src/index.ts) so that the client app can import them individually and register them locally, instead of using the library as a plugin. This may be a better option if the client app only use a small set of components in your library.
+Так как для Vue 3 существует довольно большое количество компонентов пользовательского интерфейса, вы можете захотеть использовать один из них в качестве базы для разработки своих компонентов. Например, **Component B** демонстрирует пример использования библиотеки [PrimeVue](https://www.primefaces.org/primevue/) в качестве базовой. При этом это означает, что ваше клиентское приложение тоже должно использовать эту библиотеку.
 
-As there are already many UI component libraries for Vue 3, you may just want to build on top of one of them and create components for your specific needs. The Component B in this starter shows the example of using [PrimeVue](https://www.primefaces.org/primevue/) as the fundation library. However, this means the client app shall also use the same fundation component library as your library does.
-
-The doc app itself is a client app of the libary, therefore PrimeVue is imported in [docs/.vitepress/theme/index.js](docs/.vitepress/theme/index.js). The configuration in [docs/.vitepress/config.js](docs/.vitepress/config.js) below forces VitePress to resolve these modules with no duplication, avoiding error at runtime, as PrimeVue also has Vue in its dependency.
+Например, приложение `doc app` само является клиентским приложением, которое импортирует PrimeVue (см. [docs/.vitepress/theme/index.js](docs/.vitepress/theme/index.js)). Код в конфигурации [docs/.vitepress/config.js](docs/.vitepress/config.js), приведенный ниже, разрешает не дублировать эти модули (Vue и PrimeVue), что позволяет избежать конфликтов при процессе выполнения.
 
 ```js
 module.exports = {
@@ -67,11 +70,11 @@ module.exports = {
 }
 ```
 
-> In [vite.config.ts](vite.config.ts), format 'umd' is not present in `build.lib.formats` option. This is because the PrimeVue components used by this library are externalized, and therefore requiring corresponding options in `rollupOptions.output.globals`. To avoid adding global varaibles for PrimeVue components, 'umd' is removed for simplicity.
+> В [vite.config.ts](vite.config.ts) в параметре `build.lib.formats` отсутствует формат 'umd'. Это связано с тем, что компоненты PrimeVue, используемые данной библиотекой, являются внешними и требуют соответствующих параметров в `rollupOptions.output.globals`. Чтобы не добавлять эти параметры и упростить конфигурацию, 'ump' удален из нее.
 
-### Utilities and constants
+### Утилиты и константы
 
-The library includes example utilities and constants. They are also exported in [index.ts](src/index.ts). The client app may use them as below:
+Библиотека включает примеры утилит и констант. Они также будут экспортированы в [index.ts](src/index.ts), а клиентское приложение может их использовать, например:
 
 ```js
 <script lang="ts">
@@ -92,29 +95,29 @@ export default {
 </script>
 ```
 
-### Styling
+### Стили
 
-Individual compopnent may have styles defined in its `.vue` file. They will be processed, combined and minified into `dist/style.css`, which is included in the `exports` list in [package.json](package.json).
+Отдельный компонент может иметь собственное стилевое оформление, описанное в файле `.vue`. Оно будет обработано, объединено и минифицировано в `dist/style.css`, как это описано в списке `exports` файла [package.json](package.json).
 
-If you have library level styles shared by all components in the library, you may add them to [src/assets/main.scss](src/assets/main.scss). This file is imported in [index.ts](src/index.ts), therefore the processed styles are also included into `dist/style.css`. To avoid conflicting with other global styles, consider pre-fixing the class names or wrapping them into a namespace class.
+Если у вас есть стили, которые используются в нескольких или всех компонентах библиотеки, вы можете добавить их в [src/assets/main.scss](src/assets/main.scss). Этот файл импортируется в [index.ts](src/index.ts) и после обработки будет включен в `dist/style.css`. Чтобы избежать конфликтов с другими глобальными стилями, необходимо продумать систему именования стилей или оборачивать их в namespace-классы.
 
-If you have your own special set of SVG icons, you may create a font file (`.woff` format) using tools like [Icomoon](https://icomoon.io/) or [Fontello](https://fontello.com/). This starter includes an example font file [src/assets/fonts/myfont.woff](src/assets/fonts/myfont.woff) and references it in [src/assets/main.scss](src/assets/main.scss), with utility icon CSS classes. An icon from the font file is used in Component A. Vite will include the font file into the build, see [https://vitejs.dev/guide/assets.html](https://vitejs.dev/guide/assets.html).
+Если у вас есть собственный набор SVG-изображений, вы можете создать WOFF-шрифт (`.woff`), используя инструменты такие, как [Icomoon](https://icomoon.io/) или [Fontello](https://fontello.com/). Данный стартер включает пример подобного файла [src/assets/fonts/myfont.woff](src/assets/fonts/myfont.woff) и ссылается на него в файле [src/assets/main.scss](src/assets/main.scss). Иконка из этого шрифта используется в **Component A**. Vite может включить этот файл в билд, подробнее см. [https://vitejs.dev/guide/assets.html](https://vitejs.dev/guide/assets.html).
 
-The client app shall import `style.css`, usually in the entry file:
+Клиентское приложение должно импортировать `style.css` как единый файл:
 
 ```js
 import 'my-lib/dist/style.css'
 ```
 
-### Third-party dependencies
+### Сторонние зависимости
 
-Third-party libraries used by you library may bloat up the size of your library, if you simply add them to the `dependencies` in [package.json](package.json).
+Сторонние библиотеки, которые использует ваша библиотека, могут сильно увеличить размер сборки вашей библиотеки, если вы просто добавить их в `dependencies` файла [package.json](package.json).
 
-The following are some strategies to reduce the size of your library:
+Следующие стратегии помогут сократить размер вашей библиотеки:
 
-#### Externalization
+#### Экстернализация
 
-If you expect the client app of your library may also need the same dependency, you may externalize the dependency. For example, to exclude PrimeVue from your library build artifact, in [vite.config.ts](vite.config.ts), you may have
+Если вы полагает, что клиентское приложение может так же нуждаться в такой же зависимости, вы можете сделать эту зависимость внешней. Например, чтобы исключить PrimeVue из вашей библиотеки, в файле [vite.config.ts](vite.config.ts) вам необходимо указать:
 
 ```js
 module.exports = defineConfig({
@@ -125,25 +128,29 @@ module.exports = defineConfig({
 })
 ```
 
-The dependency to be externalized may be declared as peer dependency in your library.
+Внешняя зависимость может быть объявлена как одноранговая зависимость (Peer dependencies) в вашей библиотеке. Почитать можно [здесь](https://habr.com/ru/company/otus/blog/545008/) или [здесь](https://blog.bitsrc.io/understanding-peer-dependencies-in-javascript-dbdb4ab5a7be).
 
 #### Cherry picking
 
-If you don't expect the client app of your library also needing the same dependency, you may embed cherry-picked functions. For example, to embed the `fill` function of popular library [lodash](https://lodash.com), import the `fill` function like the following:
+> Cherry picking - выбор лучших или наиболее желанных предметы из списка или группы, особенно для получения некоторого преимущества или представления чего-либо в лучшем свете
+
+Если вы полагает, что вашему клиентскому приложению не нужна будет та или иная, используемая зависимость, вы можете внедрить избранные (cherry-picking) функции. Например, чтобы внедрить функцию `fill` из пакета [lodash](https://lodash.com), импортируйте только ее следующим способом:
 
 ```js
 import fill from 'lodash/fill'
 ```
 
-Even with tree-shaking, the codes being brought into your library may still be large, as the function may have its own dependencies.
+Но даже при такой оптимизации код, который будет внедрен в вашу библиотеку, может оказаться большим, потому что та или иная функция может иметь дополнительные зависимости.
 
-Note that `import { fill } from 'lodash'` or `import _ from 'lodash'` will not work and will embed the whole `lodash` library.
+Заметьте, что `import { fill } from 'lodash'` или `import _ from 'lodash'` импортируют библиотеку `lodash` полностью.
 
-Finally, if your client app also use `lodash` and you don't want `lodash` to be in both the client app and your libraries, even after cherry-picking, you may consider cherry-picking in component library and re-export them as utils for client to consume, so that the client does not need to depend on `lodash`, therefore avoiding duplication.
+Наконец, если библиотека `lodash` и так используется в вашем клиентском приложении и вы не хотите, чтобы `lodash` импортировалось и в клиентское приложение, и в вашу библиотеку, вы можете подумать о том, чтобы вынести их в отдельную утилиту и избавить клиентское приложение от необходимости импорта самого `lodash`.
 
-### Type generation
+### Генерация типов
 
-In [tsconfig.json](tsconfig.json), the following options instructs `tsc` to emit declaration (`.d.ts` files) only, as `vite build` handles the `.js` file generation. The generated `.d.ts` files are sent to `dist/types` folder.
+Следующие параметры файла [tsconfig.json](tsconfig.json) указывают tsc (typescript compilator) на необходимость создания только объявлений (файлы `.d.ts`), так как `vite build` генерит только JS-файл.
+
+Сгенерированные файл `.d.ts` помещаются в папку `dist/types`.
 
 ```json
 "compilerOptions": {
@@ -153,19 +160,19 @@ In [tsconfig.json](tsconfig.json), the following options instructs `tsc` to emit
 }
 ```
 
-In [package.json](package.json), the line below locates the generated types for library client.
+Следующая строка в файле [package.json](package.json) указывает на входящий файл с типами для клиентского приложения:
 
 ```json
 "types": "./dist/types/index.d.ts",
 ```
 
-> In [vite.config.ts](vite.config.ts), `build.emptyOutDir` is set to `false` and `rimraf` is used instead to remove the `dist` folder before the build. This is to avoid the `dist/types` folder generated by `tsc` being deleted when running `vite build`.
+> В [vite.config.ts](vite.config.ts) параметр `build.emptyOutDir` установлен как `false`, а `rimraf` используется для удаления папки `dist` перед сборкой. Это сделано для того, чтобы папка  `dist/types`, сгенерированная `tsc`, не удалялась бы при выполнении `vite build`.
 
-### Configuration
+### Конфигурация
 
 #### TypeScript
 
-In [tsconfig.json](tsconfig.js), set the following as recommended by Vite (since esbuild is used). However, enableing this option leads to https://github.com/vitejs/vite/issues/5814. The workaround is to also enable `compilerOptions.skipLibCheck`.
+В файле [tsconfig.json](tsconfig.js) установлено нижеследующее значение, рекомендованное Vite (так как используетя esbuild). Однако это приводит к описанной ситуации: https://github.com/vitejs/vite/issues/5814. Чтобы обойти это, можно так же включить `compilerOptions.skipLibCheck`.
 
 ```json
 "compilerOptions": {
@@ -173,7 +180,7 @@ In [tsconfig.json](tsconfig.js), set the following as recommended by Vite (since
 }
 ```
 
-In [tsconfig.json](tsconfig.js), set the following to address [Issue #32](https://github.com/wuruoyun/vue-component-lib-starter/issues/32). The solution is from https://github.com/johnsoncodehk/volar/discussions/592.
+В [tsconfig.json](tsconfig.js), установлено нижеприведенное значение для решения проблемы [Issue #32](https://github.com/wuruoyun/vue-component-lib-starter/issues/32). Решение взято [отсюда](https://github.com/johnsoncodehk/volar/discussions/592).
 
 ```json
 "compilerOptions": {
@@ -183,6 +190,6 @@ In [tsconfig.json](tsconfig.js), set the following to address [Issue #32](https:
 }
 ```
 
-#### Dependencies
+#### Зависимости
 
-In [package.json](package.json), Vue and PrimeVue are declared in both `peerDependencies` and `devDependencies`. The former requires the client app to add these dependencies, and the later makes it easier to setup this library by simply running `npm install`.
+В [package.json](package.json) Vue и PrimeVue декларированы как в `peerDependencies`, так и в `devDependencies`. Первое требует, чтобы клиентское приложение обязательно добавило эти зависимости, а второе упрощает установку их вместе с библиотекой простым запуском `npm install`.
